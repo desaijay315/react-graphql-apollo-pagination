@@ -173,8 +173,6 @@ export async function getStaticProps() {
       }
     `,
   });
-
-  console.log(data.characters.info)
   return {
     props: {
       characters: data.characters.results,
