@@ -47,6 +47,20 @@ export default function Home(results) {
     }
   }, [page])
 
+  async function searchChar() {
+    const Paginatedresults = await fetch("/api/PaginatedCharacters", {
+      method: "post",
+      body: page
+    });
+    const { characters, info, error } = await Paginatedresults.json()
+    if (error) {
+      setErrors(error)
+    } else {
+      setCharacters(characters);
+      setInfo(info);
+    }
+  }
+
   return (
     <Flex direction="column" justify="center" align="center">
       <Head>
@@ -61,9 +75,13 @@ export default function Home(results) {
         <form
           onSubmit={async (event) => {
             event.preventDefault();
+            const param = {
+              search,
+              // page
+            }
             const results = await fetch("/api/SearchCharacters", {
               method: "post",
-              body: search,
+              body: JSON.stringify(param),
             });
             const { characters, info, error } = await results.json();
             if (error) {
@@ -103,7 +121,7 @@ export default function Home(results) {
               disabled={search === ""}
               onClick={async () => {
                 setSearch("");
-                setCharacters(intialState.characters);
+                searchChar()
               }}
             />
           </Stack>
@@ -111,7 +129,7 @@ export default function Home(results) {
         <Box px={4} h={8} mb={4}>Current Page: {page}
           <Button
             onClick={() => setPage(old => Math.max(old - 1, 1))}
-            disabled={page === 1}
+            disabled={page === 1 || search}
           >
             Previous Page
             </Button>{' '}

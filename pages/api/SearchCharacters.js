@@ -6,7 +6,7 @@ const client = new ApolloClient({
 });
 
 export default async (req, res) => {
-  const search = req.body;
+  const { search } = JSON.parse(req.body);
   try {
     const { data } = await client.query({
       query: gql`
